@@ -135,7 +135,8 @@ const AppointmentForm = ({
           <section className="mb-12 space-y-4">
             <h1 className="header">New Appointment</h1>
             <p className="text-dark-700">
-              Hi {name}, Request a new appointment in 10 seconds.
+              Hi <span className="font-bold text-green-500">{name}</span>,
+              Request a new appointment in 10 seconds.
             </p>
           </section>
         )}

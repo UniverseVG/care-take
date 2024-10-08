@@ -9,7 +9,7 @@ export default function Home({ searchParams }: SearchParamProps) {
   return (
     <div className=" flex h-screen max-h-screen">
       {isAdmin && <PassKeyModal />}
-      <section className="remove-scrollbar container my-auto">
+      <section className="remove-scrollbar container">
         <div className="sub-container max-w-[496px]">
           <Image
             src="/assets/icons/logo-full.svg"
