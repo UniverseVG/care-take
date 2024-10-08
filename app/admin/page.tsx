@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { StatCard } from "@/components/StatCard";
-import {columns} from "@/components/table/columns";
+import { columns } from "@/components/table/columns";
 import { DataTable } from "@/components/table/DataTable";
 import { getRecentAppointmentList } from "@/lib/actions/appointment.action";
 
@@ -22,12 +22,16 @@ const AdminPage = async () => {
           />
         </Link>
 
-        <p className="text-16-semibold">Admin Dashboard</p>
+        <p className="text-16-semibold">
+          <span className="text-green-500 mr-1">Admin</span> Dashboard
+        </p>
       </header>
 
       <main className="admin-main">
         <section className="w-full space-y-4">
-          <h1 className="header">Welcome Admin 👋</h1>
+          <h1 className="header">
+            Welcome <span className="text-green-500">Admin</span> 👋
+          </h1>
           <p className="text-dark-700">
             Start the day with managing new appointments
           </p>
