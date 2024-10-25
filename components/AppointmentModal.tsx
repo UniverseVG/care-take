@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,10 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Appointment } from "@/types/appwrite.types";
-
+import { Appointment, Doctor } from "@/types/appwrite.types";
 import "react-datepicker/dist/react-datepicker.css";
 import AppointmentForm from "./forms/AppointmentForm";
+import { getDoctors } from "@/lib/actions/doctor.action";
 
 export const AppointmentModal = ({
   patientId,
@@ -31,12 +31,23 @@ export const AppointmentModal = ({
 }) => {
   const [open, setOpen] = useState(false);
 
+  const [doctorsStore, setDoctorsStore] = useState<Doctor[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const doctorsData = await getDoctors();
+      setDoctorsStore(doctorsData);
+    };
+    fetchData();
+  }, []);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"
-          disabled={appointment?.status === "scheduled" && type === "schedule"}
+          disabled={
+            (appointment?.status === "scheduled" && type === "schedule") ||
+            (appointment?.status === "cancelled" && type === "cancel")
+          }
           className={`capitalize ${type === "schedule" && "text-green-500"}`}
         >
           {type}
@@ -56,6 +67,7 @@ export const AppointmentModal = ({
           type={type}
           appointment={appointment}
           setOpen={setOpen}
+          doctors={doctorsStore}
         />
       </DialogContent>
     </Dialog>

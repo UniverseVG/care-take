@@ -5,14 +5,33 @@ import { StatCard } from "@/components/StatCard";
 import { columns } from "@/components/table/columns";
 import { DataTable } from "@/components/table/DataTable";
 import { getRecentAppointmentList } from "@/lib/actions/appointment.action";
+import Dropdown, { MenuItem } from "@/components/Dropdown";
+import { FaUserDoctor } from "react-icons/fa6";
+import { PiUsersThreeFill } from "react-icons/pi";
 
 const AdminPage = async () => {
   const appointments = await getRecentAppointmentList();
-
+  const menuItems: MenuItem[] = [
+    {
+      title: "Manage",
+      children: [
+        {
+          title: "Manage Doctors",
+          route: `/admin/doctor`,
+          icon: <FaUserDoctor />,
+        },
+        {
+          title: "Manage Patients",
+          route: `/admin/patient`,
+          icon: <PiUsersThreeFill />,
+        },
+      ],
+    },
+  ];
   return (
     <div className="mx-auto flex max-w-7xl flex-col space-y-14">
       <header className="admin-header">
-        <Link href="/" className="cursor-pointer">
+        <Link href="/admin" className="cursor-pointer">
           <Image
             src="/assets/icons/logo-full.svg"
             height={32}
@@ -21,10 +40,31 @@ const AdminPage = async () => {
             className="h-8 w-fit"
           />
         </Link>
-
-        <p className="text-16-semibold">
-          <span className="text-green-500 mr-1">Admin</span> Dashboard
-        </p>
+        <div className="flex space-x-4">
+          <div className="flex gap-8 items-center text-white">
+            {menuItems.map((item) => {
+              return item.hasOwnProperty("children") ? (
+                <Dropdown item={item} />
+              ) : (
+                <Link
+                  className="hover:text-green-500 text-16-semibold"
+                  href={item?.route || ""}
+                >
+                  {item.title}
+                </Link>
+              );
+            })}
+          </div>
+          {/* <Link
+            href={"/admin/doctor"}
+            className="text-16-semibold text-green-500 mr-1 cursor-pointer hover:text-dark-700"
+          >
+            Manage Doctors
+          </Link> */}
+          {/* <p className="text-16-semibold">
+            <span className="text-green-500 mr-1">Admin</span> Dashboard
+          </p> */}
+        </div>
       </header>
 
       <main className="admin-main">

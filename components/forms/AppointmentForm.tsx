@@ -11,8 +11,8 @@ import SubmitButton from "../SubmitButton";
 import { Dispatch, SetStateAction, useState } from "react";
 import { getAppointmentSchema } from "@/lib/validation";
 import { useRouter } from "next/navigation";
-import { Appointment } from "@/types/appwrite.types";
-import { Doctors } from "@/constants";
+import { Appointment, Doctor } from "@/types/appwrite.types";
+import { DoctorType } from "@/constants";
 import { SelectItem } from "../ui/select";
 import { FormFieldType } from "./PatientForm";
 import "react-datepicker/dist/react-datepicker.css";
@@ -29,6 +29,7 @@ const AppointmentForm = ({
   appointment,
   name,
   setOpen,
+  doctors,
 }: {
   userId: string;
   name?: string;
@@ -36,16 +37,21 @@ const AppointmentForm = ({
   type: "create" | "schedule" | "cancel";
   appointment?: Appointment;
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  doctors?: Doctor[];
 }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(
+    appointment?.doctorProfession || null
+  );
   // 1. Define your form.
 
   const AppointmentFormValidation = getAppointmentSchema(type);
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      primaryPhysician: appointment ? appointment?.primaryPhysician : "",
+      doctor: appointment ? appointment?.doctor : "",
+      doctorProfession: appointment ? appointment?.doctorProfession : "",
       schedule: appointment
         ? new Date(appointment.schedule!)
         : new Date(Date.now()),
@@ -54,6 +60,10 @@ const AppointmentForm = ({
       cancellationReason: appointment?.cancellationReason || "",
     },
   });
+
+  const filteredDoctors = doctors?.filter(
+    (doctor) => doctor.profession === selectedSpecialty
+  );
 
   // 2. Define a submit handler.
   const onSubmit = async (
@@ -78,7 +88,9 @@ const AppointmentForm = ({
         const appointment = {
           userId,
           patient: patientId,
-          primaryPhysician: values.primaryPhysician,
+          doctorId: values.doctor,
+          doctor: values.doctor,
+          doctorProfession: values.doctorProfession,
           schedule: new Date(values.schedule),
           reason: values.reason!,
           status: status as Status,
@@ -98,21 +110,24 @@ const AppointmentForm = ({
           userId,
           appointmentId: appointment.$id!,
           appointment: {
-            primaryPhysician: values.primaryPhysician,
+            doctorId: values.doctor,
+            doctor: values.doctor,
+            doctorProfession: values.doctorProfession,
             schedule: new Date(values.schedule),
             status: status as Status,
-            cancellationReason: values.cancellationReason,
+            cancellationReason:
+              type === "cancel" ? values.cancellationReason : "",
           },
           type,
         };
         const updatedAppointment = await updateAppointment(appointmentToUpdate);
         if (updatedAppointment) {
-          setOpen && setOpen(false);
           form.reset();
+          setOpen && setOpen(false);
         }
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setIsLoading(false);
   };
@@ -146,15 +161,33 @@ const AppointmentForm = ({
             <CustomFormField
               fieldType={FormFieldType.SELECT}
               control={form.control}
-              name="primaryPhysician"
+              name="doctorProfession"
+              label="Specialty"
+              placeholder="Select a Specialty"
+              onValueChange={(value) => setSelectedSpecialty(value)}
+            >
+              {DoctorType.map((type) => (
+                <SelectItem key={type} value={type}>
+                  <div className="flex cursor-pointer items-center gap-2">
+                    <p>{type}</p>
+                  </div>
+                </SelectItem>
+              ))}
+            </CustomFormField>
+
+            <CustomFormField
+              fieldType={FormFieldType.SELECT}
+              control={form.control}
+              name="doctor"
               label="Doctor"
               placeholder="Select a doctor"
+              disabled={!selectedSpecialty}
             >
-              {Doctors.map((doctor, i) => (
-                <SelectItem key={doctor.name + i} value={doctor.name}>
+              {filteredDoctors?.map((doctor, i) => (
+                <SelectItem key={doctor.$id + i} value={doctor.$id}>
                   <div className="flex cursor-pointer items-center gap-2">
                     <Image
-                      src={doctor.image}
+                      src={doctor.photoUrl}
                       width={32}
                       height={32}
                       alt="doctor"
@@ -185,7 +218,7 @@ const AppointmentForm = ({
                 control={form.control}
                 name="reason"
                 label="Appointment reason"
-                placeholder="Annual montly check-up"
+                placeholder="Annual monthly check-up"
                 disabled={type === "schedule"}
               />
 

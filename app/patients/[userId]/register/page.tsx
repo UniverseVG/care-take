@@ -3,10 +3,12 @@ import { getUser } from "@/lib/actions/patient.actions";
 import Image from "next/image";
 import React from "react";
 import * as Sentry from "@sentry/nextjs";
+import { getDoctors } from "@/lib/actions/doctor.action";
 
 const Register = async ({ params: { userId } }: SearchParamProps) => {
   const user = await getUser(userId);
 
+  const doctors = await getDoctors();
   Sentry.metrics.set("user_view_register", user.name);
 
   return (
@@ -20,7 +22,7 @@ const Register = async ({ params: { userId } }: SearchParamProps) => {
             height={1000}
             className="mb-12 h-10 w-fit"
           />
-          <RegisterForm user={user} />
+          <RegisterForm user={user} doctors={doctors} />
 
           <p className="copyright py-12">© 2024 CareTake.</p>
         </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
@@ -33,16 +34,11 @@ interface CustomProps {
   children?: React.ReactNode;
   disabled?: boolean;
   renderSkeleton?: (field: any) => React.ReactNode;
+  onValueChange?: (value: any) => void;
 }
 
 const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
-  const {
-    fieldType,
-    iconSrc,
-    iconAlt,
-    placeholder,
-    renderSkeleton,
-  } = props;
+  const { fieldType, iconSrc, iconAlt, placeholder, renderSkeleton } = props;
   switch (fieldType) {
     case FormFieldType.INPUT:
       return (
@@ -59,6 +55,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
           <FormControl>
             <Input
               placeholder={placeholder}
+              disabled={props.disabled}
               {...field}
               className="shad-input border-0"
             />
@@ -88,7 +85,10 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
             withCountryCallingCode
             value={field.value as E164Number | undefined}
             onChange={field.onChange}
-            className="input-phone"
+            className={`${
+              props.disabled && "cursor-not-allowed text-gray-400"
+            } input-phone`}
+            disabled={props.disabled}
           />
         </FormControl>
       );
@@ -119,7 +119,14 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
     case FormFieldType.SELECT:
       return (
         <FormControl>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <Select
+            onValueChange={(value) => {
+              field.onChange(value);
+              props.onValueChange && props.onValueChange(value);
+            }}
+            disabled={props.disabled}
+            defaultValue={field.value}
+          >
             <FormControl>
               <SelectTrigger className="shad-select-trigger">
                 <SelectValue placeholder={placeholder} />

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +11,8 @@ import SubmitButton from "../SubmitButton";
 import { useState } from "react";
 import { UserFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
-import { createUser } from "@/lib/actions/patient.actions";
+import { createJwt, createUser } from "@/lib/actions/patient.actions";
+import { toast } from "react-toastify";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -47,11 +49,19 @@ const PatientForm = () => {
       };
 
       const newUser = await createUser(userData);
+
       if (newUser) {
-        router.push(`/patients/${newUser.$id}/register`);
+        const jwt = await createJwt(newUser.$id);
+        localStorage.setItem("accessToken", jwt.jwt);
+        if (jwt) {
+          router.push(`/patients/${newUser.$id}/register`);
+          toast.success(
+            `${newUser.name}, your account has been created, please complete your registration!`
+          );
+        }
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      toast.error(error.message || "Something went wrong, please try again");
     }
     setIsLoading(false);
   }
@@ -60,7 +70,9 @@ const PatientForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
         <section className="mb-12 space-y-4">
           <h1 className="header"> Hi there 👋</h1>
-          <p className="text-dark-700">Schedule your first appointment</p>
+          <p className="text-dark-700">
+            Register as a patient, to schedule an appointment
+          </p>
         </section>
 
         <CustomFormField

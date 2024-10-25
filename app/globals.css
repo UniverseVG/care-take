@@ -108,6 +108,10 @@
     @apply text-12-regular flex cursor-pointer  flex-col items-center justify-center gap-3 rounded-md border border-dashed border-dark-500 bg-dark-400 p-5;
   }
 
+  .pic-upload {
+    @apply text-12-regular flex cursor-pointer  flex-col items-center justify-center gap-3 rounded-full border border-dashed border-dark-500 bg-dark-400 p-5 w-32 h-32;
+  }
+
   .file-upload_label {
     @apply flex flex-col justify-center gap-2 text-center text-dark-600;
   }
