@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -83,3 +84,39 @@ export function encryptKey(passkey: string) {
 export function decryptKey(passkey: string) {
   return atob(passkey);
 }
+
+export function greetings() {
+  const hours = new Date().getHours();
+  const welcomeTypes = ["Good Morning", "Good Afternoon", "Good Evening"];
+
+  if (hours < 12) {
+    return welcomeTypes[0];
+  } else if (hours < 18) {
+    return welcomeTypes[1];
+  } else {
+    return welcomeTypes[2];
+  }
+}
+
+export const isTokenExpired = (token: string) => {
+  if (!token) return true;
+  try {
+    const decodedToken = jwtDecode<JwtPayload>(token);
+    const currentTime = Date.now() / 1000;
+    return decodedToken.exp! < currentTime;
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return true;
+  }
+};
+
+export const getUserId = (token: string) => {
+  if (!token) return "";
+  try {
+    const decodedToken = jwtDecode<{ userId: string }>(token);
+    return decodedToken.userId!;
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return "";
+  }
+};

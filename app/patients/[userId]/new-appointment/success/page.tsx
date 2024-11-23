@@ -2,11 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { Doctors } from "@/constants";
 import { getAppointment } from "@/lib/actions/appointment.action";
 import { formatDateTime } from "@/lib/utils";
 import { getUser } from "@/lib/actions/patient.actions";
 import * as Sentry from "@sentry/nextjs";
+import { getDoctors } from "@/lib/actions/doctor.action";
+import { Doctor } from "@/types/appwrite.types";
 
 const RequestSuccess = async ({
   searchParams,
@@ -17,15 +18,15 @@ const RequestSuccess = async ({
   const user = await getUser(userId);
 
   Sentry.metrics.set("user_view_appointment_success", user.name);
-
-  const doctor = Doctors.find(
-    (doctor) => doctor.name === appointment.primaryPhysician
+  const doctors = await getDoctors();
+  const doctor = doctors.find(
+    (doctor: Doctor) => doctor.$id === appointment?.doctor
   );
 
   return (
     <div className=" flex h-screen max-h-screen px-[5%]">
       <div className="success-img">
-        <Link href="/">
+        <Link href={`/patients/${userId}/dashboard`}>
           <Image
             src="/assets/icons/logo-full.svg"
             height={1000}
@@ -68,15 +69,20 @@ const RequestSuccess = async ({
               width={24}
               alt="calendar"
             />
-            <p> {formatDateTime(appointment.schedule).dateTime}</p>
+            <p> {formatDateTime(appointment?.schedule).dateTime}</p>
           </div>
         </section>
+        <div className="flex gap-4">
+          <Button variant="outline" className="shad-primary-btn" asChild>
+            <Link href={`/patients/${userId}/new-appointment`}>
+              New Appointment
+            </Link>
+          </Button>
 
-        <Button variant="outline" className="shad-primary-btn" asChild>
-          <Link href={`/patients/${userId}/new-appointment`}>
-            New Appointment
-          </Link>
-        </Button>
+          <Button variant="outline" className="shad-gray-btn" asChild>
+            <Link href={`/patients/${userId}/dashboard`}>Dashboard</Link>
+          </Button>
+        </div>
 
         <p className="copyright">© 2024 CareTake</p>
       </div>

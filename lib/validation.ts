@@ -11,6 +11,27 @@ export const UserFormValidation = z.object({
     .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
 });
 
+export const LoginFormValidation = z
+  .object({
+    email: z.string().email("Invalid email address"),
+  })
+  .or(
+    z.object({
+      phone: z
+        .string()
+        .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
+    })
+  )
+  .or(
+    z.object({
+      email: z.string().email("Invalid email address").optional(),
+      phone: z
+        .string()
+        .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number")
+        .optional(),
+    })
+  );
+
 export const PatientFormValidation = z.object({
   name: z
     .string()
@@ -40,7 +61,8 @@ export const PatientFormValidation = z.object({
       (emergencyContactNumber) => /^\+\d{10,15}$/.test(emergencyContactNumber),
       "Invalid phone number"
     ),
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
+  doctorProfession: z.string().min(5, "Select at least one doctor profession"),
+  primaryDoctor: z.string().min(2, "Select at least one doctor"),
   insuranceProvider: z
     .string()
     .min(2, "Insurance name must be at least 2 characters")
@@ -76,8 +98,45 @@ export const PatientFormValidation = z.object({
     }),
 });
 
+const baseDoctorSchema = z.object({
+  photo: z.custom<File[]>().optional(),
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be at most 50 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z
+    .string()
+    .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
+  birthDate: z.coerce.date(),
+  gender: z.enum(["male", "female", "other"]),
+  address: z
+    .string()
+    .min(5, "Address must be at least 5 characters")
+    .max(500, "Address must be at most 500 characters"),
+  qualification: z
+    .string()
+    .min(2, "Qualification must be at least 2 characters")
+    .max(500, "Qualification must be at most 500 characters"),
+  profession: z
+    .string()
+    .min(2, "Profession must be at least 2 characters")
+    .max(50, "Profession must be at most 50 characters"),
+});
+
+export const DoctorFormValidation = baseDoctorSchema.extend({
+  license: z.custom<File[]>().refine((value) => value?.length > 0, {
+    message: "Please upload a license",
+  }),
+});
+
+export const DoctorUpdateFormValidation = baseDoctorSchema.extend({
+  license: z.custom<File[]>().optional(),
+});
+
 export const CreateAppointmentSchema = z.object({
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
+  doctor: z.string().min(2, "Select at least one doctor"),
+  doctorProfession: z.string().optional(),
   schedule: z.coerce.date(),
   reason: z
     .string()
@@ -88,7 +147,8 @@ export const CreateAppointmentSchema = z.object({
 });
 
 export const ScheduleAppointmentSchema = z.object({
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
+  doctor: z.string().min(2, "Select at least one doctor"),
+  doctorProfession: z.string().optional(),
   schedule: z.coerce.date(),
   reason: z.string().optional(),
   note: z.string().optional(),
@@ -96,7 +156,8 @@ export const ScheduleAppointmentSchema = z.object({
 });
 
 export const CancelAppointmentSchema = z.object({
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
+  doctor: z.string().min(2, "Select at least one doctor"),
+  doctorProfession: z.string().optional(),
   schedule: z.coerce.date(),
   reason: z.string().optional(),
   note: z.string().optional(),

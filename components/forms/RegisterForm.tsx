@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,11 +11,11 @@ import SubmitButton from "../SubmitButton";
 import { useState } from "react";
 import { PatientFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
-import { registerPatient } from "@/lib/actions/patient.actions";
+import { registerPatient, updatePatient } from "@/lib/actions/patient.actions";
 import { FormFieldType } from "./PatientForm";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import {
-  Doctors,
+  DoctorType,
   GenderOptions,
   IdentificationTypes,
   PatientFormDefaultValues,
@@ -24,80 +25,146 @@ import { Label } from "../ui/label";
 import { SelectItem } from "../ui/select";
 import Image from "next/image";
 import FileUploader from "../FileUploader";
+import { Doctor, Patient } from "@/types/appwrite.types";
+import { toast } from "react-toastify";
 
-const RegisterForm = ({ user }: { user: User }) => {
+const RegisterForm = ({
+  user,
+  doctors,
+  patient,
+  isEdit = false,
+}: {
+  user: User;
+  doctors: Doctor[];
+  patient?: Patient;
+  isEdit?: boolean;
+}) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(
+    patient?.doctorProfession || null
+  );
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof PatientFormValidation>>({
     resolver: zodResolver(PatientFormValidation),
     defaultValues: {
       ...PatientFormDefaultValues,
-      name: "",
-      email: "",
-      phone: "",
+      name: user.name || "",
+      email: user.email || "",
+      phone: user.phone || "",
+      gender: patient?.gender || ("male" as Gender),
+      address: patient?.address || "",
+      occupation: patient?.occupation || "",
+      emergencyContactName: patient?.emergencyContactName || "",
+      emergencyContactNumber: patient?.emergencyContactNumber || "",
+      primaryDoctor: patient?.primaryDoctor || "",
+      doctorProfession: patient ? patient?.doctorProfession : "",
+      insuranceProvider: patient?.insuranceProvider || "",
+      insurancePolicyNumber: patient?.insurancePolicyNumber || "",
+      allergies: patient?.allergies || "",
+      currentMedication: patient?.currentMedication || "",
+      familyMedicalHistory: patient?.familyMedicalHistory || "",
+      pastMedicalHistory: patient?.pastMedicalHistory || "",
+      identificationType: patient?.identificationType || "",
+      identificationNumber: patient?.identificationNumber || "",
+      privacyConsent: patient?.privacyConsent || false,
+      treatmentConsent: patient?.treatmentConsent || false,
+      disclosureConsent: patient?.disclosureConsent || false,
+      identificationDocument: [],
     },
   });
 
-  // 2. Define a submit handler.
+  // Helper function to create form data
+  const createFormData = (file?: File) => {
+    if (!file) return undefined;
+    const blobFile = new Blob([file], { type: file.type });
+    const formData = new FormData();
+    formData.append("blobFile", blobFile);
+    formData.append("fileName", file.name);
+    return formData;
+  };
+
+  // Function to structure patient form values
+  const formValues = (
+    values: z.infer<typeof PatientFormValidation>,
+    userId: string
+  ) => {
+    const idDocumentFormData =
+      values.identificationDocument && values.identificationDocument.length > 0
+        ? createFormData(values.identificationDocument[0])
+        : undefined;
+
+    return {
+      userId,
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      birthDate: new Date(values.birthDate),
+      gender: values.gender,
+      address: values.address,
+      occupation: values.occupation,
+      emergencyContactName: values.emergencyContactName,
+      emergencyContactNumber: values.emergencyContactNumber,
+      primaryDoctor: values.primaryDoctor,
+      insuranceProvider: values.insuranceProvider,
+      insurancePolicyNumber: values.insurancePolicyNumber,
+      allergies: values.allergies,
+      doctorProfession: values.doctorProfession,
+      currentMedication: values.currentMedication,
+      familyMedicalHistory: values.familyMedicalHistory,
+      pastMedicalHistory: values.pastMedicalHistory,
+      identificationType: values.identificationType,
+      identificationNumber: values.identificationNumber,
+      identificationDocument: values?.identificationDocument
+        ? idDocumentFormData
+        : isEdit
+        ? patient?.identificationDocumentUrl
+        : undefined,
+      privacyConsent: values.privacyConsent,
+      disclosureConsent: values.disclosureConsent,
+      treatmentConsent: values.treatmentConsent,
+      doctor: values.primaryDoctor,
+    };
+  };
+
+  // Submit handler function
   const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
     setIsLoading(true);
 
-    // Store file info in form data as
-    let formData;
-    if (
-      values.identificationDocument &&
-      values.identificationDocument?.length > 0
-    ) {
-      const blobFile = new Blob([values.identificationDocument[0]], {
-        type: values.identificationDocument[0].type,
-      });
-
-      formData = new FormData();
-      formData.append("blobFile", blobFile);
-      formData.append("fileName", values.identificationDocument[0].name);
-    }
-
     try {
-      const patient = {
-        userId: user.$id,
-        name: values.name,
-        email: values.email,
-        phone: values.phone,
-        birthDate: new Date(values.birthDate),
-        gender: values.gender,
-        address: values.address,
-        occupation: values.occupation,
-        emergencyContactName: values.emergencyContactName,
-        emergencyContactNumber: values.emergencyContactNumber,
-        primaryPhysician: values.primaryPhysician,
-        insuranceProvider: values.insuranceProvider,
-        insurancePolicyNumber: values.insurancePolicyNumber,
-        allergies: values.allergies,
-        currentMedication: values.currentMedication,
-        familyMedicalHistory: values.familyMedicalHistory,
-        pastMedicalHistory: values.pastMedicalHistory,
-        identificationType: values.identificationType,
-        identificationNumber: values.identificationNumber,
-        identificationDocument: values.identificationDocument
-          ? formData
-          : undefined,
-        privacyConsent: values.privacyConsent,
-        disclosureConsent: values.disclosureConsent,
-        treatmentConsent: values.treatmentConsent,
-      };
+      const patientData = formValues(values, user.$id);
 
-      const newPatient = await registerPatient(patient);
+      if (!isEdit) {
+        const newPatient = await registerPatient(patientData);
 
-      if (newPatient) {
-        router.push(`/patients/${user.$id}/new-appointment`);
+        if (newPatient) {
+          router.push(`/patients/${user.$id}/new-appointment`);
+          toast.success(
+            `${user.name}, you have successfully registered with CareTake. Please book your first appointment!`
+          );
+        }
+      } else if (patient?.$id) {
+        const updatedPatientData = {
+          patientId: patient.$id,
+          patient: patientData,
+        };
+        const updatedPatient = await updatePatient(updatedPatientData);
+        if (updatedPatient) {
+          toast.success("Patient information updated successfully!");
+          router.push(`/patients/${user.$id}/dashboard`);
+        }
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      toast.error(error.message || "Something went wrong, please try again");
     }
 
     setIsLoading(false);
   };
+
+  const filteredDoctors = doctors?.filter(
+    (doctor) => doctor.profession === selectedSpecialty
+  );
 
   return (
     <Form {...form}>
@@ -128,6 +195,7 @@ const RegisterForm = ({ user }: { user: User }) => {
             placeholder="John Doe"
             iconSrc="/assets/icons/user.svg"
             iconAlt="user"
+            disabled={user.name !== ""}
           />
           <div className="flex flex-col gap-6 xl:flex-row">
             <CustomFormField
@@ -138,6 +206,7 @@ const RegisterForm = ({ user }: { user: User }) => {
               placeholder="john.doe@me.com"
               iconSrc="/assets/icons/email.svg"
               iconAlt="email"
+              disabled={user.email !== ""}
             />
 
             <CustomFormField
@@ -146,6 +215,7 @@ const RegisterForm = ({ user }: { user: User }) => {
               name="phone"
               label="Phone number"
               placeholder="(+91) 1234567890"
+              disabled={user.phone !== ""}
             />
           </div>
 
@@ -224,29 +294,47 @@ const RegisterForm = ({ user }: { user: User }) => {
           <div className="mb-9 space-y-1">
             <h2 className="sub-header">Medical Information </h2>
           </div>
-
-          <CustomFormField
-            control={form.control}
-            fieldType={FormFieldType.SELECT}
-            name="primaryPhysician"
-            label="Primary Physician"
-            placeholder="Select a doctor"
-          >
-            {Doctors.map((doctor) => (
-              <SelectItem key={doctor.name} value={doctor.name}>
-                <div className="flex cursor-pointer items-center gap-2">
-                  <Image
-                    src={doctor.image}
-                    alt={doctor.name}
-                    width={24}
-                    height={24}
-                    className="rounded-full border border-dark-500"
-                  />
-                  <p>{doctor.name}</p>
-                </div>
-              </SelectItem>
-            ))}
-          </CustomFormField>
+          <div className="flex flex-col gap-6 xl:flex-row">
+            <CustomFormField
+              control={form.control}
+              fieldType={FormFieldType.SELECT}
+              name="doctorProfession"
+              label="Doctor Specialty"
+              placeholder="Select a specialty"
+              onValueChange={(value) => setSelectedSpecialty(value)}
+            >
+              {DoctorType.map((type) => (
+                <SelectItem key={type} value={type}>
+                  <div className="flex cursor-pointer items-center gap-2">
+                    <p>{type}</p>
+                  </div>
+                </SelectItem>
+              ))}
+            </CustomFormField>
+            <CustomFormField
+              control={form.control}
+              fieldType={FormFieldType.SELECT}
+              name="primaryDoctor"
+              label="Primary Doctor"
+              placeholder="Select a doctor"
+              disabled={!selectedSpecialty}
+            >
+              {filteredDoctors.map((doctor) => (
+                <SelectItem key={doctor?.$id} value={doctor.$id}>
+                  <div className="flex cursor-pointer items-center gap-2">
+                    <Image
+                      src={doctor.photoUrl}
+                      alt={doctor.name}
+                      width={24}
+                      height={24}
+                      className="rounded-full border border-dark-500"
+                    />
+                    <p>{doctor.name}</p>
+                  </div>
+                </SelectItem>
+              ))}
+            </CustomFormField>
+          </div>
 
           <div className="flex flex-col gap-6 xl:flex-row">
             <CustomFormField
@@ -338,7 +426,11 @@ const RegisterForm = ({ user }: { user: User }) => {
             label="Scanned copy of Identification Document"
             renderSkeleton={(field) => (
               <FormControl>
-                <FileUploader files={field.value} onChange={field.onChange} />
+                <FileUploader
+                  file={patient?.identificationDocumentUrl}
+                  files={field.value}
+                  onChange={field.onChange}
+                />
               </FormControl>
             )}
           />

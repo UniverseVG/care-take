@@ -25,11 +25,13 @@ import { decryptKey } from "@/lib/utils";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  adminMode?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  adminMode = true,
 }: DataTableProps<TData, TValue>) {
   const encryptedKey =
     typeof window !== "undefined"
@@ -39,10 +41,13 @@ export function DataTable<TData, TValue>({
   useEffect(() => {
     const accessKey = encryptedKey && decryptKey(encryptedKey);
 
-    if (accessKey !== process.env.NEXT_PUBLIC_ADMIN_PASSKEY!.toString()) {
+    if (
+      accessKey !== process.env.NEXT_PUBLIC_ADMIN_PASSKEY!.toString() &&
+      adminMode
+    ) {
       redirect("/");
     }
-  }, [encryptedKey]);
+  }, [encryptedKey, adminMode]);
 
   const table = useReactTable({
     data,

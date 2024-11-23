@@ -18,7 +18,17 @@ export default function Home({ searchParams }: SearchParamProps) {
             height={1000}
             className="mb-12 h-10 w-fit"
           />
+
           <PatientForm />
+          <p className="text-14-regular text-center">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-green-500 ml-1 hover:text-dark-700"
+            >
+              Sign in
+            </Link>
+          </p>
           <div className="text-14-regular mt-20 flex justify-between">
             <p className="justify-items-end text-dark-600 xl:text-left">
               © 2024 CareTake.
