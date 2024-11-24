@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { ID, Query } from "node-appwrite";
@@ -26,8 +27,9 @@ export const createAppointment = async (
 
     revalidatePath("/", "layout");
     return parseStringify(newAppointment);
-  } catch (error) {
+  } catch (error: any) {
     console.error("An error occurred while creating a new appointment:", error);
+    throw new Error(error.message);
   }
 };
 
@@ -241,10 +243,11 @@ export const updateAppointment = async ({
     revalidatePath("/", "layout");
 
     return parseStringify(updatedAppointment);
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       "An error occurred while retrieving the existing patient:",
       error
     );
+    throw new Error(error.message);
   }
 };

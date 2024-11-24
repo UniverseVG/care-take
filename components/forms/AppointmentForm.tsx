@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 
@@ -21,6 +22,7 @@ import {
   createAppointment,
   updateAppointment,
 } from "@/lib/actions/appointment.action";
+import { toast } from "react-toastify";
 
 const AppointmentForm = ({
   userId,
@@ -104,6 +106,9 @@ const AppointmentForm = ({
           router.push(
             `/patients/${userId}/new-appointment/success?appointmentId=${newAppointment.$id}`
           );
+          toast.success(
+            `${newAppointment.patient.name}, your appointment has been scheduled!`
+          );
         }
       } else if (appointment?.$id) {
         const appointmentToUpdate = {
@@ -124,10 +129,16 @@ const AppointmentForm = ({
         if (updatedAppointment) {
           form.reset();
           setOpen && setOpen(false);
+          toast.success(
+            `Appointment for ${updatedAppointment.patient.name} has been ${
+              type === "schedule" ? "scheduled" : "cancelled"
+            }`
+          );
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      toast.error(error.message || "Something went wrong, please try again");
     }
     setIsLoading(false);
   };

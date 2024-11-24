@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 
@@ -23,6 +24,7 @@ import { registerDoctor, updateDoctor } from "@/lib/actions/doctor.action";
 import { useRouter } from "next/navigation";
 import { Doctor } from "@/types/appwrite.types";
 import useDoctorStore from "@/store/useDoctor";
+import { toast } from "react-toastify";
 
 interface DoctorFormProps {
   type: "add" | "edit";
@@ -103,9 +105,11 @@ const DoctorForm = ({ type, doctor, setOpen }: DoctorFormProps) => {
         if (newDoctor) {
           addDoctorToStore(newDoctor);
           router.push("/admin/doctor");
+          toast.success(`Dr. ${newDoctor.name} added successfully!`);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error(error);
+        toast.error(error.message || "Something went wrong, please try again");
       }
     } else if (doctor?.$id) {
       try {
@@ -117,9 +121,11 @@ const DoctorForm = ({ type, doctor, setOpen }: DoctorFormProps) => {
         if (result) {
           updateDoctorInStore(result);
           setOpen && setOpen(false);
+          toast.success(`Dr. ${result.name} updated successfully!`);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error(error);
+        toast.error(error.message || "Something went wrong, please try again");
       }
     }
     setIsLoading(false);

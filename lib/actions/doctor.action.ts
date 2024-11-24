@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { ID } from "node-appwrite";
@@ -57,8 +58,9 @@ export const registerDoctor = async ({
     );
     revalidatePath("/", "layout");
     return parseStringify(newDoctor);
-  } catch (error) {
+  } catch (error: any) {
     console.error("An error occurred while creating a new doctor:", error);
+    throw new Error(error.message);
   }
 };
 
@@ -104,8 +106,9 @@ export const updateDoctor = async ({
     );
     revalidatePath("/", "layout");
     return parseStringify(updatedDoctor);
-  } catch (error) {
+  } catch (error: any) {
     console.error("An error occurred while updating the doctor:", error);
+    throw new Error(error.message);
   }
 };
 
