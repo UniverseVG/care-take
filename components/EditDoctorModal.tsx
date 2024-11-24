@@ -27,7 +27,7 @@ export const EditDoctorModal = ({ doctor }: { doctor: Doctor }) => {
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent className="shad-dialog sm:max-w-xl max-h-[90vh] overflow-auto max-w-[860px] ">
+      <DialogContent className="shad-dialog sm:max-w-xl max-h-[90vh] overflow-y-auto overflow-x-hidden max-w-[860px]">
         <DialogHeader className="mb-4 space-y-3">
           <DialogTitle className="capitalize ">Edit Doctor Details</DialogTitle>
           <DialogDescription>Update your doctor details</DialogDescription>
