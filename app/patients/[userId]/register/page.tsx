@@ -20,7 +20,7 @@ const Register = async ({ params: { userId } }: SearchParamProps) => {
             alt="care-take"
             width={1000}
             height={1000}
-            className="mb-12 h-10 w-fit"
+            className="mb-12 lg:h-10 w-fit"
           />
           <RegisterForm user={user} doctors={doctors} />
 

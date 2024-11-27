@@ -26,7 +26,7 @@ export const ViewPatientDetailModal = ({ patient }: { patient: Patient }) => {
           View Details
         </Button>
       </DialogTrigger>
-      <DialogContent className="shad-dialog sm:max-w-xl max-h-[90vh] overflow-auto">
+      <DialogContent className="shad-dialog sm:max-w-xl max-h-[90vh] overflow-y-auto overflow-x-hidden">
         <DialogHeader className="mb-4 space-y-3">
           <DialogTitle className="capitalize">Patient Detail</DialogTitle>
           <DialogDescription>

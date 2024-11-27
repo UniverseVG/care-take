@@ -7,7 +7,7 @@ export default function Home({ searchParams }: SearchParamProps) {
   const isAdmin = searchParams.admin === "true";
 
   return (
-    <div className=" flex h-screen max-h-screen">
+    <div className=" flex h-screen max-h-screen overflow-x-hidden">
       {isAdmin && <PassKeyModal />}
       <section className="remove-scrollbar container">
         <div className="sub-container max-w-[496px]">
@@ -16,11 +16,11 @@ export default function Home({ searchParams }: SearchParamProps) {
             alt="care-take"
             width={1000}
             height={1000}
-            className="mb-12 h-10 w-fit"
+            className="mb-12 lg:h-10 w-fit"
           />
 
           <PatientForm />
-          <p className="text-14-regular text-center">
+          <p className="text-14-regular text-center mt-4">
             Already have an account?{" "}
             <Link
               href="/login"

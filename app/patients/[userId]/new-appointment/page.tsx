@@ -23,7 +23,7 @@ const NewAppointment = async ({ params: { userId } }: SearchParamProps) => {
               <Image
                 src="/assets/icons/back.png"
                 height={32}
-                width={162}
+                width={32}
                 alt="logo"
                 className="h-8 w-fit"
               />

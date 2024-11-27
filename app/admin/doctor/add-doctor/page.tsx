@@ -8,23 +8,25 @@ const AddDoctor = () => {
     <div className=" flex h-screen max-h-screen">
       <section className="remove-scrollbar container">
         <div className="sub-container max-w-[860px] flex-1 flex-col py-10">
-          <div className="flex items-center mb-12">
-            <Link href="/admin/doctor" className="cursor-pointer mr-3">
+          <div className="flex mb-8">
+            <Link href={"/admin/doctor"} className="cursor-pointer mr-3">
               <Image
                 src="/assets/icons/back.png"
+                height={32}
+                width={32}
+                alt="logo"
+                className="h-8 w-fit"
+              />
+            </Link>
+            <Link href={"/admin"} className="cursor-pointer">
+              <Image
+                src="/assets/icons/logo-full.svg"
                 height={32}
                 width={162}
                 alt="logo"
                 className="h-8 w-fit"
               />
             </Link>
-            <Image
-              src="/assets/icons/logo-full.svg"
-              alt="care-take"
-              width={1000}
-              height={1000}
-              className="h-10 w-fit"
-            />
           </div>
 
           <DoctorForm type="add" />

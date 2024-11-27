@@ -135,7 +135,7 @@ const DoctorForm = ({ type, doctor, setOpen }: DoctorFormProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={`${isEdit ? "space-y-6" : "space-y-12"} w-[400px] pr-2`}
+        className={`${isEdit ? "space-y-6" : "space-y-12"}`}
       >
         {!isEdit && (
           <section className="space-y-4">
