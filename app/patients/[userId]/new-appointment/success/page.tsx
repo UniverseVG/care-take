@@ -4,8 +4,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getAppointment } from "@/lib/actions/appointment.action";
 import { formatDateTime } from "@/lib/utils";
-import { getUser } from "@/lib/actions/patient.actions";
-import * as Sentry from "@sentry/nextjs";
 import { getDoctors } from "@/lib/actions/doctor.action";
 import { Doctor } from "@/types/appwrite.types";
 
@@ -15,9 +13,7 @@ const RequestSuccess = async ({
 }: SearchParamProps) => {
   const appointmentId = (searchParams?.appointmentId as string) || "";
   const appointment = await getAppointment(appointmentId);
-  const user = await getUser(userId);
 
-  Sentry.metrics.set("user_view_appointment_success", user.name);
   const doctors = await getDoctors();
   const doctor = doctors.find(
     (doctor: Doctor) => doctor.$id === appointment?.doctor

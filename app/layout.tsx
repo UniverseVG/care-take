@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Analytics } from "@vercel/analytics/next";
 
 const fontSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -40,6 +41,7 @@ export default function RootLayout({
         >
           <ThemeProvider attribute="class" defaultTheme="dark">
             {children}
+            <Analytics />
           </ThemeProvider>
           <ToastContainer theme="dark" position="top-right" autoClose={5000} />
         </body>
