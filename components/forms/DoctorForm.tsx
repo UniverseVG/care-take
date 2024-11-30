@@ -137,12 +137,14 @@ const DoctorForm = ({ type, doctor, setOpen }: DoctorFormProps) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className={`flex-1 ${isEdit ? "space-y-6" : "space-y-12"}`}
       >
-        {!isEdit && (
-          <section className="space-y-4">
-            <h1 className="header">Add Doctor 👨‍⚕️</h1>
-            <p className="text-dark-700">Add information about the doctor</p>
-          </section>
-        )}
+        <section className="space-y-4">
+          <h1 className="header">
+            {type === "add" ? "Add" : "Edit"} Doctor 👨‍⚕️
+          </h1>
+          <p className="text-dark-700">
+            {type === "add" ? "Add" : "Edit"} information about the doctor
+          </p>
+        </section>
 
         <section className="space-y-6">
           {!isEdit && (

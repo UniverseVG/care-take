@@ -103,48 +103,4 @@ export const patientAdminColumns: ColumnDef<Patient>[] = [
       );
     },
   },
-  //   {
-  //     accessorKey: "status",
-  //     header: "Status",
-  //     cell: ({ row }) => {
-  //       const patient = row.original;
-  //       return (
-  //         <div className="min-w-[115px]">
-  //           <StatusBadge status={patient.status} />
-  //         </div>
-  //       );
-  //     },
-  //   },
-  //   {
-  //     accessorKey: "schedule",
-  //     header: "Appointment",
-  //     cell: ({ row }) => {
-  //       const patient = row.original;
-  //       return (
-  //         <p className="text-14-regular min-w-[100px]">
-  //           {formatDateTime(patient.schedule).dateTime}
-  //         </p>
-  //       );
-  //     },
-  //   },
-  //   {
-  //     accessorKey: "primaryDoctor",
-  //     header: "Doctor",
-  //     cell: ({ row }) => {
-  //       const patient = row.original;
-
-  //       return (
-  //         <div className="flex items-center gap-3">
-  //           <Image
-  //             src={patient.doctorId.photoUrl || "/assets/images/dr-green.png"}
-  //             alt="doctor"
-  //             width={100}
-  //             height={100}
-  //             className="size-8"
-  //           />
-  //           <p className="whitespace-nowrap">Dr. {patient.doctorId?.name}</p>
-  //         </div>
-  //       );
-  //     },
-  //   },
 ];

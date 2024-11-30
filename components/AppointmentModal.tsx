@@ -53,7 +53,10 @@ export const AppointmentModal = ({
           {type}
         </Button>
       </DialogTrigger>
-      <DialogContent className="shad-dialog sm:max-w-md max-h-[90vh] overflow-y-auto overflow-x-hidden">
+      <DialogContent
+        className="shad-dialog sm:max-w-md max-h-[90vh] overflow-y-auto overflow-x-hidden"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader className="mb-4 space-y-3">
           <DialogTitle className="capitalize">{type} Appointment</DialogTitle>
           <DialogDescription>

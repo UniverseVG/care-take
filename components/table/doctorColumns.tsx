@@ -3,9 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import { Doctor } from "@/types/appwrite.types";
-// import { StatusBadge } from "../StatusBadge";
 import { useEffect, useState } from "react";
-import { EditDoctorModal } from "../EditDoctorModal";
 import { DeleteDoctorModal } from "../DeleteDoctorModal";
 import Link from "next/link";
 
@@ -92,7 +90,7 @@ export const doctorColumns: ColumnDef<Doctor>[] = [
 
       return (
         <Link
-          href={`/admin/doctor/${doctor.$id}`}
+          href={`/admin/doctor/${doctor.$id}/appointments`}
           className={`capitalize text-green-500 ml-6`}
         >
           Manage
@@ -107,8 +105,13 @@ export const doctorColumns: ColumnDef<Doctor>[] = [
       const doctor = row.original;
 
       return (
-        <div className="flex gap-1">
-          <EditDoctorModal doctor={doctor} />
+        <div className="flex gap-1 items-center">
+          <Link
+            href={`/admin/doctor/${doctor.$id}/edit-doctor`}
+            className={`capitalize text-green-500`}
+          >
+            Edit
+          </Link>
 
           <DeleteDoctorModal doctor={doctor} />
         </div>
