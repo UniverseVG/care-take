@@ -11,13 +11,15 @@ export default function Home({ searchParams }: SearchParamProps) {
       {isAdmin && <PassKeyModal />}
       <section className="remove-scrollbar container">
         <div className="sub-container max-w-[496px]">
-          <Image
-            src="/assets/icons/logo-full.svg"
-            alt="care-take"
-            width={1000}
-            height={1000}
-            className="mb-12 lg:h-10 w-fit"
-          />
+          <div className="cursor-pointer mb-12">
+            <Image
+              src="/assets/icons/logo-full.svg"
+              height={32}
+              width={162}
+              alt="logo"
+              className="h-8 w-fit"
+            />
+          </div>
 
           <PatientForm />
           <p className="text-14-regular text-center mt-4">

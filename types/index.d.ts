@@ -84,3 +84,11 @@ declare type UpdateDoctorParams = {
   doctorId: string;
   doctor: Doctor;
 };
+
+declare interface AdminParams {
+  totalCount: number;
+  scheduledCount: number;
+  pendingCount: number;
+  cancelledCount: number;
+  documents: Appointment[];
+}

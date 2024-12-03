@@ -21,17 +21,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { decryptKey } from "@/lib/utils";
+import { SkeletonData } from "@/constants";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   adminMode?: boolean;
+  loading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   adminMode = true,
+  loading = false,
 }: DataTableProps<TData, TValue>) {
   const encryptedKey =
     typeof window !== "undefined"
@@ -78,6 +81,21 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
+          {loading && (
+            <TableCell
+              colSpan={columns.length}
+              className="h-24 text-center p-0"
+            >
+              {SkeletonData.map((item) => {
+                return (
+                  <div className="animate-pulse h-24 mb-4" key={item}>
+                    <div className="h-24 bg-gray-700 w-full"></div>
+                  </div>
+                );
+              })}
+            </TableCell>
+          )}
+
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow

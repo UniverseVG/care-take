@@ -13,13 +13,15 @@ const Register = async ({ params: { userId } }: SearchParamProps) => {
     <div className=" flex h-screen max-h-screen">
       <section className="remove-scrollbar container">
         <div className="sub-container max-w-[860px] flex-1 flex-col py-10">
-          <Image
-            src="/assets/icons/logo-full.svg"
-            alt="care-take"
-            width={1000}
-            height={1000}
-            className="mb-12 lg:h-10 w-fit"
-          />
+          <div className="cursor-pointer mb-12">
+            <Image
+              src="/assets/icons/logo-full.svg"
+              height={32}
+              width={162}
+              alt="logo"
+              className="h-8 w-fit"
+            />
+          </div>
           <RegisterForm user={user} doctors={doctors} />
 
           <p className="copyright py-12">© 2024 CareTake.</p>

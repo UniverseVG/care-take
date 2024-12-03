@@ -11,14 +11,15 @@ export default function Login({ searchParams }: SearchParamProps) {
       {isAdmin && <PassKeyModal />}
       <section className="remove-scrollbar container">
         <div className="sub-container max-w-[496px]">
-          <Image
-            src="/assets/icons/logo-full.svg"
-            alt="care-take"
-            width={1000}
-            height={1000}
-            className="mb-12 lg:h-10 w-fit"
-          />
-
+          <div className="cursor-pointer mb-12">
+            <Image
+              src="/assets/icons/logo-full.svg"
+              height={32}
+              width={162}
+              alt="logo"
+              className="h-8 w-fit"
+            />
+          </div>
           <LoginForm />
 
           <div className="text-14-regular mt-20 flex justify-between">
