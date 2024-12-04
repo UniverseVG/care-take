@@ -73,7 +73,7 @@ export const patientAdminColumns: ColumnDef<Patient>[] = [
       return (
         <div className="flex items-center gap-3">
           <Image
-            src={patient.doctor.photoUrl || "/assets/images/dr-green.png"}
+            src={patient.doctor?.photoUrl || "/assets/images/dr-green.png"}
             alt="doctor"
             width={100}
             height={100}
