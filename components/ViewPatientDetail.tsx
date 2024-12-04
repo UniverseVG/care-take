@@ -66,7 +66,7 @@ const ViewPatientDetail = ({ patient }: { patient: Patient }) => {
           <p className="font-bold whitespace-nowrap">Primary Doctor :</p>
           <div className="flex items-center gap-2">
             <Image
-              src={patient.doctor.photoUrl || "/assets/images/dr-green.png"}
+              src={patient?.doctor?.photoUrl || "/assets/images/dr-green.png"}
               alt="doctor"
               width={100}
               height={100}
