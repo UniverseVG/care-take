@@ -7,10 +7,13 @@ import { patientAdminColumns } from "@/components/table/patientAdminCloumns";
 import { getPatients } from "@/lib/actions/patient.actions";
 import { StatCard } from "@/components/StatCard";
 import { getRecentAppointmentList } from "@/lib/actions/appointment.action";
+import { PatientDataTable } from "@/components/table/PatientDataTable";
+import { getDoctors } from "@/lib/actions/doctor.action";
 
 const PatientAdmissionPage = async () => {
   const patients = await getPatients();
   const appointments = await getRecentAppointmentList();
+  const doctors = await getDoctors();
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col space-y-14">
@@ -72,7 +75,7 @@ const PatientAdmissionPage = async () => {
           />
         </section>
 
-        <DataTable columns={patientAdminColumns} data={patients} />
+        <PatientDataTable columns={patientAdminColumns} data={patients} doctors={doctors} />
       </main>
     </div>
   );

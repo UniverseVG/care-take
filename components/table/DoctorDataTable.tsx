@@ -25,7 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { decryptKey } from "@/lib/utils";
-import { SkeletonData } from "@/constants";
+import { DoctorType, SkeletonData } from "@/constants";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -49,13 +49,12 @@ interface DataTableProps<TData, TValue> {
   isDoctor?: boolean;
 }
 
-export function DataTable<TData, TValue>({
+export function DoctorDataTable<TData, TValue>({
   columns,
   data,
   adminMode = true,
   loading = false,
   doctors = [],
-  isDoctor = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -106,20 +105,6 @@ export function DataTable<TData, TValue>({
         </div>
       ) : (
         <div className="flex justify-end gap-4 mb-4 py-4">
-          {adminMode && (
-            <Input
-              placeholder="Search..."
-              type="text"
-              value={
-                (table.getColumn("patient")?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table.getColumn("patient")?.setFilterValue(event.target.value)
-              }
-              className="shad-input border-0 w-64 h-11"
-            />
-          )}
-
           <Popover>
             <PopoverTrigger asChild>
               <Button className="shad-gray-btn h-10">
@@ -137,114 +122,82 @@ export function DataTable<TData, TValue>({
                 </div>
                 <div className="grid gap-2">
                   <div className="grid grid-cols-3 items-center gap-4">
-                    <Label htmlFor="status">Status</Label>
+                    <Label htmlFor="doctor">Doctor</Label>
                     <Select
                       onValueChange={(value) => {
                         table
-                          .getColumn("status")
-                          ?.setFilterValue(value as Status | "");
+                          .getColumn("name")
+                          ?.setFilterValue(value as string | "");
                       }}
                       value={
-                        (table
-                          .getColumn("status")
-                          ?.getFilterValue() as Status) || ""
+                        (table.getColumn("name")?.getFilterValue() as string) ||
+                        ""
                       }
                     >
                       <SelectTrigger
-                        id="status"
+                        id="doctor"
                         className="shad-select-trigger col-span-2 h-8"
                       >
-                        <SelectValue placeholder="Status" />
+                        <SelectValue placeholder={"Doctor"} />
                       </SelectTrigger>
 
                       <SelectContent className="shad-select-content">
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="scheduled">Scheduled</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
+                        {doctors.map((doctor) => {
+                          return (
+                            <SelectItem key={doctor.$id} value={doctor?.name}>
+                              <div className="flex items-center gap-3">
+                                <Image
+                                  src={
+                                    doctor?.photoUrl ||
+                                    "/assets/images/dr-green.png"
+                                  }
+                                  alt="doctor"
+                                  width={100}
+                                  height={100}
+                                  className="size-4"
+                                />
+                                <p className="whitespace-nowrap">
+                                  Dr. {doctor?.name}
+                                </p>
+                              </div>
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="grid grid-cols-3 items-center gap-4">
-                    <Label htmlFor="schedule">Schedule</Label>
-                    <div className="flex rounded-md border border-dark-500 bg-dark-400 col-span-2">
-                      <Image
-                        src="/assets/icons/calendar.svg"
-                        height={24}
-                        width={24}
-                        alt="user"
-                        className="ml-2"
-                      />
-                      <ReactDatePicker
-                        id="schedule"
-                        selected={
-                          (table
-                            .getColumn("schedule")
-                            ?.getFilterValue() as Date) ?? ""
-                        }
-                        onChange={(date: Date | null) =>
-                          table.getColumn("schedule")?.setFilterValue(date)
-                        }
-                        value={
-                          (table
-                            .getColumn("schedule")
-                            ?.getFilterValue() as string) ?? ""
-                        }
-                        placeholderText="Schedule"
-                        timeInputLabel="Time:"
-                        dateFormat={"MM/dd/yyyy"}
-                        wrapperClassName="date-picker h-8"
-                      />
-                    </div>
-                  </div>
-                  {isDoctor && (
-                    <div className="grid grid-cols-3 items-center gap-4">
-                      <Label htmlFor="doctor">Doctor</Label>
-                      <Select
-                        onValueChange={(value) => {
-                          table
-                            .getColumn("primaryDoctor")
-                            ?.setFilterValue(value as string | "");
-                        }}
-                        value={
-                          (table
-                            .getColumn("primaryDoctor")
-                            ?.getFilterValue() as string) || ""
-                        }
+                    <Label htmlFor="specialty">Specialty</Label>
+                    <Select
+                      onValueChange={(value) => {
+                        table
+                          .getColumn("specialty")
+                          ?.setFilterValue(value as string | "");
+                      }}
+                      value={
+                        (table
+                          .getColumn("specialty")
+                          ?.getFilterValue() as string) || ""
+                      }
+                    >
+                      <SelectTrigger
+                        id="specialty"
+                        className="shad-select-trigger col-span-2 h-8"
                       >
-                        <SelectTrigger
-                          id="doctor"
-                          className="shad-select-trigger col-span-2 h-8"
-                        >
-                          <SelectValue placeholder={"Doctor"} />
-                        </SelectTrigger>
+                        <SelectValue placeholder={"Specialty"} />
+                      </SelectTrigger>
 
-                        <SelectContent className="shad-select-content">
-                          {doctors.map((doctor) => {
-                            return (
-                              <SelectItem key={doctor.$id} value={doctor?.$id}>
-                                <div className="flex items-center gap-3">
-                                  <Image
-                                    src={
-                                      doctor?.photoUrl ||
-                                      "/assets/images/dr-green.png"
-                                    }
-                                    alt="doctor"
-                                    width={100}
-                                    height={100}
-                                    className="size-4"
-                                  />
-                                  <p className="whitespace-nowrap">
-                                    Dr. {doctor?.name}
-                                  </p>
-                                </div>
-                              </SelectItem>
-                            );
-                          })}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
+                      <SelectContent className="shad-select-content">
+                        {DoctorType.map((type) => {
+                          return (
+                            <SelectItem key={type} value={type}>
+                              {type}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <Button
                     className={"shad-primary-btn w-full"}
                     onClick={() => {

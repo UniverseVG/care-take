@@ -7,6 +7,7 @@ import { getRecentAppointmentList } from "@/lib/actions/appointment.action";
 import { getDoctors } from "@/lib/actions/doctor.action";
 import { doctorColumns } from "@/components/table/doctorColumns";
 import { greetings } from "@/lib/utils";
+import { DoctorDataTable } from "@/components/table/DoctorDataTable";
 
 const DoctorAdmissionPage = async () => {
   const doctors = await getDoctors();
@@ -82,7 +83,11 @@ const DoctorAdmissionPage = async () => {
           />
         </section>
 
-        <DataTable columns={doctorColumns} data={doctors} />
+        <DoctorDataTable
+          columns={doctorColumns}
+          data={doctors}
+          doctors={doctors}
+        />
       </main>
     </div>
   );

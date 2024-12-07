@@ -174,6 +174,7 @@ const DoctorAdminPage = ({ params: { doctorId } }: SearchParamProps) => {
           columns={columns}
           data={appointments.documents}
           loading={isLoading}
+          isDoctor={false}
         />
       </main>
     </div>

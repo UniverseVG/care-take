@@ -6,6 +6,7 @@ import { StatCard } from "@/components/StatCard";
 import { columns } from "@/components/table/columns";
 import { DataTable } from "@/components/table/DataTable";
 import { getRecentAppointmentListByPatientId } from "@/lib/actions/appointment.action";
+import { getDoctors } from "@/lib/actions/doctor.action";
 import { getPatient } from "@/lib/actions/patient.actions";
 import { appwriteClient } from "@/lib/appwrite-client.config";
 import { Appointment, Doctor } from "@/types/appwrite.types";
@@ -23,13 +24,16 @@ const PatientDetail = ({ params: { patientId } }: SearchParamProps) => {
     documents: [],
   });
   const [patient, setPatient] = useState<Doctor>();
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const fetchAppointments = async () => {
     setIsLoading(true);
     const appointments = await getRecentAppointmentListByPatientId(patientId);
     const patientResult = await getPatient(patientId);
+    const doctors = await getDoctors();
     setAppointments(appointments);
     setPatient(patientResult);
+    setDoctors(doctors);
     setIsLoading(false);
   };
 
@@ -171,6 +175,7 @@ const PatientDetail = ({ params: { patientId } }: SearchParamProps) => {
           columns={columns}
           data={appointments.documents}
           loading={isLoading}
+          doctors={doctors}
         />
       </main>
     </div>

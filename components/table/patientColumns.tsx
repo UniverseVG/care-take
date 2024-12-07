@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
@@ -5,6 +6,8 @@ import Image from "next/image";
 import { formatDateTime } from "@/lib/utils";
 import { Appointment } from "@/types/appwrite.types";
 import { StatusBadge } from "../StatusBadge";
+import { ArrowUpDown } from "lucide-react";
+import { Button } from "../ui/button";
 
 export const patientColumns: ColumnDef<Appointment>[] = [
   {
@@ -20,10 +23,28 @@ export const patientColumns: ColumnDef<Appointment>[] = [
       const appointment = row.original;
       return <p className="text-14-medium ">{appointment.patient?.name}</p>;
     },
+    filterFn: (row, _, value) => {
+      const appointment = row.original;
+      return appointment.patient?.name
+        .toLowerCase()
+        .includes(value.toLowerCase());
+    },
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="px-0"
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+
     cell: ({ row }) => {
       const appointment = row.original;
       return (
@@ -32,16 +53,37 @@ export const patientColumns: ColumnDef<Appointment>[] = [
         </div>
       );
     },
+    filterFn: (row, _, value) => {
+      const appointment = row.original;
+      return appointment.status.toLowerCase().includes(value.toLowerCase());
+    },
   },
   {
     accessorKey: "schedule",
-    header: "Appointment",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="px-0"
+        >
+          Appointment
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const appointment = row.original;
       return (
         <p className="text-14-regular min-w-[100px]">
           {formatDateTime(appointment.schedule).dateTime}
         </p>
+      );
+    },
+    filterFn: (row, id, value) => {
+      const schedule = row.getValue(id) as Date;
+      return formatDateTime(schedule).dateOnly.includes(
+        formatDateTime(value).dateOnly
       );
     },
   },
@@ -63,6 +105,10 @@ export const patientColumns: ColumnDef<Appointment>[] = [
           <p className="whitespace-nowrap">Dr. {appointment.doctorId?.name}</p>
         </div>
       );
+    },
+    filterFn: (row, _, value) => {
+      const appointment = row.original;
+      return appointment.doctor.toLowerCase().includes(value.toLowerCase());
     },
   },
 ];

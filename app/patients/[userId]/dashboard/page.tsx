@@ -11,11 +11,13 @@ import Dropdown, { MenuItem } from "@/components/Dropdown";
 import { FaUserEdit } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { RiCalendarScheduleFill } from "react-icons/ri";
+import { getDoctors } from "@/lib/actions/doctor.action";
 
 export const dynamic = "force-dynamic";
 const PatientDashboard = async ({ params: { userId } }: SearchParamProps) => {
   const appointments = await getRecentAppointmentListByPatientId(userId);
   const user = await getUser(userId);
+  const doctors = await getDoctors();
   const menuItems: MenuItem[] = [
     {
       title: "Settings",
@@ -102,6 +104,7 @@ const PatientDashboard = async ({ params: { userId } }: SearchParamProps) => {
           columns={patientColumns}
           data={appointments.documents}
           adminMode={false}
+          doctors={doctors}
         />
       </main>
     </div>
