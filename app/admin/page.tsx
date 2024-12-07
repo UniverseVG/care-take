@@ -14,7 +14,8 @@ import { PiUsersThreeFill } from "react-icons/pi";
 import { getRecentAppointmentList } from "@/lib/actions/appointment.action";
 import { appwriteClient } from "@/lib/appwrite-client.config";
 import { toast } from "react-toastify";
-import { Appointment } from "@/types/appwrite.types";
+import { Appointment, Doctor } from "@/types/appwrite.types";
+import { getDoctors } from "@/lib/actions/doctor.action";
 
 const AdminPage = () => {
   const [appointments, setAppointments] = useState<AdminParams>({
@@ -25,6 +26,7 @@ const AdminPage = () => {
     documents: [],
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
   useEffect(() => {
     fetchAppointments();
     const unsubscribe = appwriteClient.subscribe(
@@ -116,6 +118,8 @@ const AdminPage = () => {
   const fetchAppointments = async () => {
     setIsLoading(true);
     const response = await getRecentAppointmentList();
+    const doctors = await getDoctors();
+    setDoctors(doctors);
     setAppointments(response);
     setIsLoading(false);
   };
@@ -187,6 +191,7 @@ const AdminPage = () => {
         <DataTable
           columns={columns}
           data={appointments.documents}
+          doctors={doctors}
           loading={isLoading}
         />
       </main>

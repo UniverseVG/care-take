@@ -57,7 +57,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
               placeholder={placeholder}
               disabled={props.disabled}
               {...field}
-              className="shad-input border-0"
+              className="shad-input border-0 h-11"
             />
           </FormControl>
         </div>
@@ -110,7 +110,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
               onChange={(date: Date | null) => field.onChange(date!)}
               timeInputLabel="Time:"
               dateFormat={props.dateFormat ?? "MM/dd/yyyy"}
-              wrapperClassName="date-picker"
+              wrapperClassName="date-picker h-11"
             />
           </FormControl>
         </div>
@@ -128,7 +128,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
             defaultValue={field.value}
           >
             <FormControl>
-              <SelectTrigger className="shad-select-trigger">
+              <SelectTrigger className="shad-select-trigger h-11">
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>

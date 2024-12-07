@@ -5,6 +5,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import { ViewPatientDetailModal } from "../ViewPatientDetailModal";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import { ArrowUpDown } from "lucide-react";
 
 export const patientAdminColumns: ColumnDef<Patient>[] = [
   {
@@ -15,7 +17,18 @@ export const patientAdminColumns: ColumnDef<Patient>[] = [
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="px-0"
+        >
+          Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const patient = row.original;
       return (
@@ -24,10 +37,25 @@ export const patientAdminColumns: ColumnDef<Patient>[] = [
         </p>
       );
     },
+    filterFn: (row, _, value) => {
+      const patient = row.original;
+      return patient.name.toLowerCase().startsWith(value.toLowerCase());
+    },
   },
   {
     accessorKey: "email",
-    header: "Email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="px-0"
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const patient = row.original;
       return (
@@ -36,13 +64,32 @@ export const patientAdminColumns: ColumnDef<Patient>[] = [
         </p>
       );
     },
+    filterFn: (row, _, value) => {
+      const patient = row.original;
+      return patient.email.toLowerCase().startsWith(value.toLowerCase());
+    },
   },
   {
     accessorKey: "phone",
-    header: "Phone",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="px-0"
+        >
+          Phone
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const patient = row.original;
       return <p className="text-14-medium">{patient.phone}</p>;
+    },
+    filterFn: (row, _, value) => {
+      const patient = row.original;
+      return patient.email.toLowerCase().startsWith(value.toLowerCase());
     },
   },
   {
@@ -51,6 +98,10 @@ export const patientAdminColumns: ColumnDef<Patient>[] = [
     cell: ({ row }) => {
       const patient = row.original;
       return <p className="text-14-medium">{patient.gender}</p>;
+    },
+    filterFn: (row, _, value) => {
+      const patient = row.original;
+      return patient.gender.toLowerCase().includes(value.toLowerCase());
     },
   },
   {
@@ -67,7 +118,18 @@ export const patientAdminColumns: ColumnDef<Patient>[] = [
   },
   {
     accessorKey: "primaryDoctor",
-    header: "Doctor",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="px-0"
+        >
+          Primary Doctor
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const patient = row.original;
       return (

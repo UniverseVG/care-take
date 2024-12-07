@@ -6,6 +6,8 @@ import { Doctor } from "@/types/appwrite.types";
 import { useEffect, useState } from "react";
 import { DeleteDoctorModal } from "../DeleteDoctorModal";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import { ArrowUpDown } from "lucide-react";
 
 interface DoctorNameCellProps {
   doctor: Doctor;
@@ -47,12 +49,34 @@ export const doctorColumns: ColumnDef<Doctor>[] = [
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Name
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => <DoctorNameCell doctor={row.original} />,
+
+    filterFn: (row, _, value) => {
+      const doctor = row.getValue("name") as Doctor;
+      return doctor.toLowerCase().includes(value.toLowerCase());
+    },
   },
   {
     accessorKey: "qualification",
-    header: "Qualification",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="px-0"
+      >
+        Qualification
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const doctor = row.original;
       return <p className="text-14-medium ">{doctor.qualification}</p>;
@@ -65,6 +89,11 @@ export const doctorColumns: ColumnDef<Doctor>[] = [
       const doctor = row.original;
       return <p className="text-14-medium ">{doctor.profession}</p>;
     },
+
+    filterFn: (row, _, value) => {
+      const doctor = row.original;
+      return doctor.profession.toLowerCase().includes(value.toLowerCase());
+    },
   },
   {
     accessorKey: "phone",
@@ -76,7 +105,16 @@ export const doctorColumns: ColumnDef<Doctor>[] = [
   },
   {
     accessorKey: "address",
-    header: "Address",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="px-0"
+      >
+        Address
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const doctor = row.original;
       return <p className="text-14-medium ">{doctor.address}</p>;
