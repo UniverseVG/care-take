@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { DataTable } from "@/components/table/DataTable";
 
 import { greetings } from "@/lib/utils";
 import { patientAdminColumns } from "@/components/table/patientAdminCloumns";

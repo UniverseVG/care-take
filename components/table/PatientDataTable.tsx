@@ -14,7 +14,6 @@ import {
 } from "@tanstack/react-table";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import ReactDatePicker from "react-datepicker";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -37,7 +36,6 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Label } from "../ui/label";
 import { Filter, FilterX } from "lucide-react";
-import "react-datepicker/dist/react-datepicker.css";
 import { Doctor } from "@/types/appwrite.types";
 
 interface DataTableProps<TData, TValue> {
@@ -93,7 +91,7 @@ export function PatientDataTable<TData, TValue>({
   return (
     <div className="data-table">
       {loading ? (
-        <div className="flex justify-end gap-4 mb-4 py-4">
+        <div className="flex justify-end gap-4 py-2">
           <div className="animate-pulse">
             <div className="h-11 bg-gray-700 w-64"></div>
           </div>
@@ -103,7 +101,7 @@ export function PatientDataTable<TData, TValue>({
           </div>
         </div>
       ) : (
-        <div className="flex justify-end gap-4 mb-4 py-4">
+        <div className="flex justify-end gap-4 py-2">
           <Input
             placeholder="Search..."
             type="text"

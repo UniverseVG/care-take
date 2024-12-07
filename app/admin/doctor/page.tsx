@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { StatCard } from "@/components/StatCard";
-import { DataTable } from "@/components/table/DataTable";
 import { getRecentAppointmentList } from "@/lib/actions/appointment.action";
 import { getDoctors } from "@/lib/actions/doctor.action";
 import { doctorColumns } from "@/components/table/doctorColumns";

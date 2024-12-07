@@ -95,7 +95,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="data-table">
       {loading ? (
-        <div className="flex justify-end gap-4 mb-4 py-4">
+        <div className="flex justify-end gap-4 py-2 pr-2">
           <div className="animate-pulse">
             <div className="h-11 bg-gray-700 w-64"></div>
           </div>
@@ -105,7 +105,7 @@ export function DataTable<TData, TValue>({
           </div>
         </div>
       ) : (
-        <div className="flex justify-end gap-4 mb-4 py-4">
+        <div className="flex justify-end gap-4 py-2 pr-2">
           {adminMode && (
             <Input
               placeholder="Search..."
