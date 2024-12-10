@@ -170,24 +170,28 @@ export const columns: ColumnDef<Appointment>[] = [
 
       row.original.latest = statusValue;
 
-      return isLatest ? (
-        <span className="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-          Latest Appt.
-        </span>
-      ) : isUpcoming ? (
-        scheduled ? (
-          <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-            Scheduled Appt.
-          </span>
-        ) : (
-          <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-            New Appt.
-          </span>
-        )
-      ) : (
-        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-          Past Appt.
-        </span>
+      return (
+        <div className="min-w-[180px]">
+          {isLatest ? (
+            <span className="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+              Latest Appt.
+            </span>
+          ) : isUpcoming ? (
+            scheduled ? (
+              <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                Scheduled Appt.
+              </span>
+            ) : (
+              <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                New Appt.
+              </span>
+            )
+          ) : (
+            <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+              Past Appt.
+            </span>
+          )}
+        </div>
       );
     },
     filterFn: (row, _, value) => {
