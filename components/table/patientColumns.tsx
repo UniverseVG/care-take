@@ -111,4 +111,52 @@ export const patientColumns: ColumnDef<Appointment>[] = [
       return appointment.doctor.toLowerCase().includes(value.toLowerCase());
     },
   },
+  {
+    accessorKey: "latest",
+    header: "",
+    cell: ({ row }) => {
+      const appointment = row.original;
+      const now = new Date();
+      const appointmentDate = new Date(appointment.schedule);
+      const scheduled = appointment.status === "scheduled";
+      const isUpcoming = appointmentDate > now;
+
+      const statusValue = isUpcoming
+        ? scheduled
+          ? "Upcoming Appt."
+          : "New Appt."
+        : "Past Appt.";
+
+      row.original.latest = statusValue;
+
+      return isUpcoming ? (
+        scheduled ? (
+          <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+            Upcoming Appt.
+          </span>
+        ) : (
+          <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+            New Appt.
+          </span>
+        )
+      ) : (
+        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+          Past Appt.
+        </span>
+      );
+    },
+    sortingFn: (rowA, rowB) => {
+      const order = ["Upcoming Appt.", "New Appt.", "Past Appt."];
+
+      const statusA = rowA.original.latest;
+      const statusB = rowB.original.latest;
+
+      return order.indexOf(statusA) - order.indexOf(statusB);
+    },
+    filterFn: (row, _, value) => {
+      const appointment = row.original.latest;
+
+      return appointment === value;
+    },
+  },
 ];

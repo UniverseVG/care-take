@@ -58,3 +58,11 @@ export const StatusIcon = {
 };
 
 export const SkeletonData = [1, 2, 3, 4, 5];
+
+export const StatusList = [
+  "Upcoming Appt.",
+  "Scheduled Appt.",
+  "New Appt.",
+  "Latest Appt.",
+  "Past Appt.",
+];

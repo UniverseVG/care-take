@@ -23,6 +23,7 @@ export const columns: ColumnDef<Appointment>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="px-0"
         >
           Patient
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -58,6 +59,7 @@ export const columns: ColumnDef<Appointment>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="px-0"
         >
           Appointment
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -130,6 +132,67 @@ export const columns: ColumnDef<Appointment>[] = [
           />
         </div>
       );
+    },
+  },
+  {
+    accessorKey: "latest",
+    header: "",
+    cell: ({ row, table }) => {
+      const appointment = row.original;
+      const now = new Date();
+      const appointmentDate = new Date(appointment.schedule);
+      const scheduled = appointment.status === "scheduled";
+      const isUpcoming = appointmentDate > now;
+
+      const allAppointments = table
+        .getCoreRowModel()
+        .rows.map((r) => r.original);
+      const futureAppointments = allAppointments.filter(
+        (appt) =>
+          appt.patient.$id === appointment.patient.$id &&
+          new Date(appt.schedule) > now
+      );
+      const latestAppointment = futureAppointments.sort(
+        (a, b) =>
+          new Date(b.schedule).getTime() - new Date(a.schedule).getTime()
+      )[0];
+
+      const isLatest =
+        latestAppointment && latestAppointment.$id === appointment.$id;
+
+      const statusValue = isLatest
+        ? "Latest Appt."
+        : isUpcoming
+        ? scheduled
+          ? "Scheduled Appt."
+          : "New Appt."
+        : "Past Appt.";
+
+      row.original.latest = statusValue;
+
+      return isLatest ? (
+        <span className="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+          Latest Appt.
+        </span>
+      ) : isUpcoming ? (
+        scheduled ? (
+          <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+            Scheduled Appt.
+          </span>
+        ) : (
+          <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+            New Appt.
+          </span>
+        )
+      ) : (
+        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+          Past Appt.
+        </span>
+      );
+    },
+    filterFn: (row, _, value) => {
+      const appointment = row.original.latest;
+      return appointment === value;
     },
   },
 ];

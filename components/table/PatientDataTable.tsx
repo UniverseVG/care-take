@@ -91,7 +91,7 @@ export function PatientDataTable<TData, TValue>({
   return (
     <div className="data-table">
       {loading ? (
-        <div className="flex justify-end gap-4 py-2">
+        <div className="flex justify-end gap-4 py-2 pr-2">
           <div className="animate-pulse">
             <div className="h-11 bg-gray-700 w-64"></div>
           </div>
@@ -101,7 +101,7 @@ export function PatientDataTable<TData, TValue>({
           </div>
         </div>
       ) : (
-        <div className="flex justify-end gap-4 py-2">
+        <div className="flex justify-end gap-4 py-2 pr-2">
           <Input
             placeholder="Search..."
             type="text"
@@ -109,7 +109,7 @@ export function PatientDataTable<TData, TValue>({
             onChange={(event) => {
               table.getColumn("name")?.setFilterValue(event.target.value);
             }}
-            className="shad-input border-0 w-64 h-11"
+            className="shad-input border-0 w-64 h-10"
           />
 
           <Popover>

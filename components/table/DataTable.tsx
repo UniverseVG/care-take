@@ -25,7 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { decryptKey } from "@/lib/utils";
-import { SkeletonData } from "@/constants";
+import { SkeletonData, StatusList } from "@/constants";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -116,7 +116,7 @@ export function DataTable<TData, TValue>({
               onChange={(event) =>
                 table.getColumn("patient")?.setFilterValue(event.target.value)
               }
-              className="shad-input border-0 w-64 h-11"
+              className="shad-input border-0 w-64 h-10"
             />
           )}
 
@@ -137,7 +137,9 @@ export function DataTable<TData, TValue>({
                 </div>
                 <div className="grid gap-2">
                   <div className="grid grid-cols-3 items-center gap-4">
-                    <Label htmlFor="status">Status</Label>
+                    <Label htmlFor="appointment-status">
+                      Appointment Status
+                    </Label>
                     <Select
                       onValueChange={(value) => {
                         table
@@ -151,10 +153,10 @@ export function DataTable<TData, TValue>({
                       }
                     >
                       <SelectTrigger
-                        id="status"
+                        id="appointment-status"
                         className="shad-select-trigger col-span-2 h-8"
                       >
-                        <SelectValue placeholder="Status" />
+                        <SelectValue placeholder="Appointment Status" />
                       </SelectTrigger>
 
                       <SelectContent className="shad-select-content">
@@ -244,6 +246,38 @@ export function DataTable<TData, TValue>({
                       </Select>
                     </div>
                   )}
+                  <div className="grid grid-cols-3 items-center gap-4">
+                    <Label htmlFor="status">Status</Label>
+                    <Select
+                      onValueChange={(value) => {
+                        table
+                          .getColumn("latest")
+                          ?.setFilterValue(value as string | "");
+                      }}
+                      value={
+                        (table
+                          .getColumn("latest")
+                          ?.getFilterValue() as string) || ""
+                      }
+                    >
+                      <SelectTrigger
+                        id="status"
+                        className="shad-select-trigger col-span-2 h-8"
+                      >
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+
+                      <SelectContent className="shad-select-content">
+                        {StatusList?.map((status) => {
+                          return (
+                            <SelectItem key={status} value={status}>
+                              {status}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
                   <Button
                     className={"shad-primary-btn w-full"}
@@ -279,18 +313,20 @@ export function DataTable<TData, TValue>({
         </TableHeader>
         <TableBody>
           {loading && (
-            <TableCell
-              colSpan={columns.length}
-              className="h-24 text-center p-0"
-            >
-              {SkeletonData.map((item) => {
-                return (
-                  <div className="animate-pulse mb-4" key={item}>
-                    <div className="h-24 bg-gray-700 w-full"></div>
-                  </div>
-                );
-              })}
-            </TableCell>
+            <TableRow>
+              <TableCell
+                colSpan={columns.length}
+                className="h-24 text-center p-0"
+              >
+                {SkeletonData.map((item) => {
+                  return (
+                    <div className="animate-pulse mb-4" key={item}>
+                      <div className="h-24 bg-gray-700 w-full"></div>
+                    </div>
+                  );
+                })}
+              </TableCell>
+            </TableRow>
           )}
 
           {table.getRowModel().rows?.length ? (
