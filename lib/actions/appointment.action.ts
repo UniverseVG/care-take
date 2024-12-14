@@ -70,7 +70,7 @@ export const getRecentAppointmentList = async () => {
       ...counts,
       documents: appointments.documents,
     };
-
+    revalidatePath("/", "layout");
     return parseStringify(data);
   } catch (error) {
     console.error(
@@ -119,7 +119,7 @@ export const getRecentAppointmentListByPatientId = async (
       ...counts,
       documents: appointments.documents,
     };
-
+    revalidatePath("/", "layout");
     return parseStringify(data);
   } catch (error) {
     console.error(
@@ -166,7 +166,7 @@ export const getRecentAppointmentListByDoctorId = async (doctorId: string) => {
       ...counts,
       documents: appointments.documents,
     };
-
+    revalidatePath("/", "layout");
     return parseStringify(data);
   } catch (error) {
     console.error(
@@ -184,7 +184,7 @@ export const getAppointment = async (appointmentId: string) => {
       APPOINTMENT_COLLECTION_ID!,
       appointmentId
     );
-
+    revalidatePath("/", "layout");
     return parseStringify(appointment);
   } catch (error) {
     console.error(
@@ -204,6 +204,7 @@ export const sendSMSNotification = async (userId: string, content: string) => {
       [],
       [userId]
     );
+    revalidatePath("/", "layout");
     return parseStringify(message);
   } catch (error) {
     console.error("An error occurred while sending sms:", error);
@@ -241,7 +242,6 @@ export const updateAppointment = async ({
     await sendSMSNotification(userId, smsMessage);
 
     revalidatePath("/", "layout");
-
     return parseStringify(updatedAppointment);
   } catch (error: any) {
     console.error(
