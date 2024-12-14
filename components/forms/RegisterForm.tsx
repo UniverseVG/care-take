@@ -23,11 +23,11 @@ import {
 import "react-datepicker/dist/react-datepicker.css";
 import { Label } from "../ui/label";
 import { SelectItem } from "../ui/select";
-import Image from "next/image";
 import FileUploader from "../FileUploader";
 import { Doctor, Patient } from "@/types/appwrite.types";
 import { toast } from "react-toastify";
 import { getDoctors } from "@/lib/actions/doctor.action";
+import { DoctorNameCell } from "../DoctorNameCell";
 
 const RegisterForm = ({
   user,
@@ -330,16 +330,7 @@ const RegisterForm = ({
             >
               {filteredDoctors.map((doctor) => (
                 <SelectItem key={doctor?.$id} value={doctor.$id}>
-                  <div className="flex cursor-pointer items-center gap-2">
-                    <Image
-                      src={doctor.photoUrl}
-                      alt={doctor.name}
-                      width={24}
-                      height={24}
-                      className="rounded-full border border-dark-500"
-                    />
-                    <p>{doctor.name}</p>
-                  </div>
+                  <DoctorNameCell doctor={doctor} />
                 </SelectItem>
               ))}
             </CustomFormField>
