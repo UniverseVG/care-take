@@ -8,7 +8,7 @@ import { Form, FormControl } from "@/components/ui/form";
 import CustomFormField from "../CustomFormField";
 import "react-phone-number-input/style.css";
 import SubmitButton from "../SubmitButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PatientFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import { registerPatient, updatePatient } from "@/lib/actions/patient.actions";
@@ -27,15 +27,14 @@ import Image from "next/image";
 import FileUploader from "../FileUploader";
 import { Doctor, Patient } from "@/types/appwrite.types";
 import { toast } from "react-toastify";
+import { getDoctors } from "@/lib/actions/doctor.action";
 
 const RegisterForm = ({
   user,
-  doctors,
   patient,
   isEdit = false,
 }: {
   user: User;
-  doctors: Doctor[];
   patient?: Patient;
   isEdit?: boolean;
 }) => {
@@ -44,6 +43,16 @@ const RegisterForm = ({
   const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(
     patient?.doctorProfession || null
   );
+
+  const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
+
+  const fetchDoctors = async () => {
+    const response = await getDoctors();
+    setDoctorsList(response);
+  };
+  useEffect(() => {
+    fetchDoctors();
+  }, []);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof PatientFormValidation>>({
@@ -162,7 +171,7 @@ const RegisterForm = ({
     setIsLoading(false);
   };
 
-  const filteredDoctors = doctors?.filter(
+  const filteredDoctors = doctorsList?.filter(
     (doctor) => doctor.profession === selectedSpecialty
   );
 

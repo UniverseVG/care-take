@@ -2,12 +2,9 @@ import RegisterForm from "@/components/forms/RegisterForm";
 import { getUser } from "@/lib/actions/patient.actions";
 import Image from "next/image";
 import React from "react";
-import { getDoctors } from "@/lib/actions/doctor.action";
 
 const Register = async ({ params: { userId } }: SearchParamProps) => {
   const user = await getUser(userId);
-
-  const doctors = await getDoctors();
 
   return (
     <div className=" flex h-screen max-h-screen">
@@ -22,7 +19,7 @@ const Register = async ({ params: { userId } }: SearchParamProps) => {
               className="h-8 w-fit"
             />
           </div>
-          <RegisterForm user={user} doctors={doctors} />
+          <RegisterForm user={user} />
 
           <p className="copyright py-12">© 2024 CareTake.</p>
         </div>

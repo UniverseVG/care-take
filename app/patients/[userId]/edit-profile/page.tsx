@@ -1,5 +1,4 @@
 import RegisterForm from "@/components/forms/RegisterForm";
-import { getDoctors } from "@/lib/actions/doctor.action";
 import { getPatient, getUser } from "@/lib/actions/patient.actions";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,7 +7,6 @@ import React from "react";
 const EditProfile = async ({ params: { userId } }: SearchParamProps) => {
   const user = await getUser(userId);
   const patient = await getPatient(userId);
-  const doctors = await getDoctors();
   return (
     <div className=" flex h-screen max-h-screen">
       <section className="remove-scrollbar container">
@@ -39,12 +37,7 @@ const EditProfile = async ({ params: { userId } }: SearchParamProps) => {
               />
             </Link>
           </div>
-          <RegisterForm
-            user={user}
-            doctors={doctors}
-            patient={patient}
-            isEdit={true}
-          />
+          <RegisterForm user={user} patient={patient} isEdit={true} />
 
           <p className="copyright py-12">© 2024 CareTake.</p>
         </div>
