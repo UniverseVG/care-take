@@ -131,8 +131,8 @@ export const getDoctors = async () => {
     const doctors = await databases.listDocuments(
       DATABASE_ID!,
       DOCTOR_COLLECTION_ID!
+      // [Query.equal("userId", [userId])]
     );
-    revalidatePath("/", "layout");
     return parseStringify(doctors.documents);
   } catch (error) {
     console.error(
@@ -149,7 +149,6 @@ export const getDoctor = async (doctorId: string) => {
       DOCTOR_COLLECTION_ID!,
       doctorId
     );
-    revalidatePath("/", "layout");
     return parseStringify(doctor);
   } catch (error) {
     console.error(

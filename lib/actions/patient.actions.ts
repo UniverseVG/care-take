@@ -26,7 +26,6 @@ export const createUser = async (user: CreateUserParams) => {
       undefined,
       user.name
     );
-    revalidatePath("/", "layout");
     return parseStringify(newUser);
   } catch (error: any) {
     throw new Error(error.message);
@@ -46,7 +45,7 @@ export const loginUser = async (user: LoginUserParams) => {
     } else if (user.phone && !user.email) {
       documents = await users.list([Query.equal("phone", user.phone!)]);
     }
-    revalidatePath("/", "layout");
+
     return parseStringify(documents?.users[0]);
   } catch (error: any) {
     throw new Error("Invalid credentials provided " + error.message);
@@ -73,7 +72,6 @@ export const createJwt = async (userId: string) => {
       maxAge: 24 * 60 * 60 * 60,
       sameSite: "strict",
     });
-    revalidatePath("/", "layout");
     return parseStringify(jwt);
   } catch (error) {
     console.error(error);
@@ -83,7 +81,6 @@ export const createJwt = async (userId: string) => {
 export const getUser = async (userId: string) => {
   try {
     const user = await users.get(userId);
-    revalidatePath("/", "layout");
     return parseStringify(user);
   } catch (error) {
     console.error(error);
@@ -183,7 +180,6 @@ export const getPatient = async (userId: string) => {
       PATIENT_COLLECTION_ID!,
       [Query.equal("userId", [userId])]
     );
-    revalidatePath("/", "layout");
     return parseStringify(patients.documents[0]);
   } catch (error) {
     console.error(
@@ -199,7 +195,6 @@ export const getPatients = async () => {
       DATABASE_ID!,
       PATIENT_COLLECTION_ID!
     );
-    revalidatePath("/", "layout");
     return parseStringify(patients.documents);
   } catch (error) {
     console.error(
