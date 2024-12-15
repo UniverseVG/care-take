@@ -133,16 +133,16 @@ export const patientColumns: ColumnDef<Appointment>[] = [
         <div className="min-w-[180px]">
           {isUpcoming ? (
             scheduled ? (
-              <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+              <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded ml-12 lg:ml-0">
                 Upcoming Appt.
               </span>
             ) : (
-              <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+              <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded ml-12 lg:ml-0">
                 New Appt.
               </span>
             )
           ) : (
-            <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+            <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded ml-12 lg:ml-0">
               Past Appt.
             </span>
           )}
